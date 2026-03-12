@@ -1,0 +1,28 @@
+/* ════════════════════════════════════════════════════════
+   GK Hub — Light Theme
+   ════════════════════════════════════════════════════════ */
+:root {
+    --bg-deep:    #F2F2F7;
+    --bg-panel:   #FFFFFF;
+    --bg-card:    #E8E8F0;
+    --bg-hover:   #DCDCEC;
+    --border:     #C8C8DC;
+    --accent:     #0075C4;
+    --accent2:    #6040CC;
+    --accent-dim: #C0DCFF;
+    --text-hi:    #14141E;
+    --text-lo:    #8080A0;
+    --text-mid:   #404060;
+    --success:    #18A058;
+    --warning:    #C07010;
+    --error:      #C02020;
+    --radius:     8px;
+    --radius-sm:  4px;
+}
+
+body {
+    background-color: #F2F2F7;
+    color: #14141E;
+    font-family: "Noto Sans";
+    font-size: 14px;
+}

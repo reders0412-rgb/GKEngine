@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GKEngine.UI.Views.FieldRowView">
+    <!-- Single label + text input row -->
+    <Grid ColumnDefinitions="64,*" Margin="0,2">
+        <TextBlock Grid.Column="0" Classes="InspLabel"
+                   Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   VerticalAlignment="Center"/>
+        <TextBox   Grid.Column="1" Classes="VecInput"
+                   Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+    </Grid>
+</UserControl>

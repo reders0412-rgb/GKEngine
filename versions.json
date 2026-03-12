@@ -1,0 +1,10 @@
+{
+  "versions": [
+    {
+      "tag": "1.0",
+      "name": "GK Engine 1.0",
+      "download": "https://github.com/reders0412-rgb/GKEngine/releases/download/v1.0/GKSuite-1.0-Windows-x64.zip",
+      "notes": "Initial release — OpenGL 3.3 renderer, C# Avalonia editor UI, 2D/3D templates."
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GKEngine.UI.Views.ComponentBlockView"
+             Background="Transparent">
+
+    <Border BorderBrush="{DynamicResource BrushBorder}"
+            BorderThickness="0,0,0,1">
+        <StackPanel>
+            <!-- Component header -->
+            <Border Background="{DynamicResource BrushBgDeep}"
+                    Padding="10,6"
+                    Cursor="Hand"
+                    PointerPressed="Header_PointerPressed">
+                <Grid ColumnDefinitions="16,*,20">
+                    <!-- Expand arrow -->
+                    <TextBlock Grid.Column="0"
+                               x:Name="ExpandArrow"
+                               Text="▼"
+                               FontSize="9"
+                               Foreground="{DynamicResource BrushTextLo}"
+                               VerticalAlignment="Center"/>
+                    <!-- Icon + Title -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                Spacing="8">
+                        <TextBlock x:Name="ComponentIconText"
+                                   FontSize="13"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock x:Name="ComponentTitleText"
+                                   FontSize="13"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource BrushTextHi}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <!-- Context menu button -->
+                    <Button Grid.Column="2"
+                            Content="⋮"
+                            Classes="IconBtn"
+                            FontSize="14"
+                            Padding="2,0"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="Component options"/>
+                </Grid>
+            </Border>
+
+            <!-- Content (collapsible) -->
+            <Border x:Name="ContentArea"
+                    Padding="0,4,0,8">
+                <ContentPresenter x:Name="ContentSlot"/>
+            </Border>
+        </StackPanel>
+    </Border>
+
+</UserControl>

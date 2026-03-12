@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GKEngine.UI.ViewModels"
+             x:Class="GKEngine.UI.Views.ToolbarView"
+             x:DataType="vm:EditorViewModel"
+             Background="{DynamicResource BrushBgDeep}">
+
+    <Border BorderBrush="{DynamicResource BrushBorder}"
+            BorderThickness="0,0,0,1"
+            Padding="8,4">
+        <DockPanel>
+
+            <!-- Left: pivot / global -->
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <ComboBox FontSize="12" Width="90"
+                          Background="{DynamicResource BrushBgCard}"
+                          Foreground="{DynamicResource BrushTextHi}">
+                    <ComboBoxItem>Center</ComboBoxItem>
+                    <ComboBoxItem>Pivot</ComboBoxItem>
+                </ComboBox>
+                <ComboBox FontSize="12" Width="90"
+                          Background="{DynamicResource BrushBgCard}"
+                          Foreground="{DynamicResource BrushTextHi}">
+                    <ComboBoxItem>Global</ComboBoxItem>
+                    <ComboBoxItem>Local</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Centre: Play / Pause / Step -->
+            <StackPanel HorizontalAlignment="Center"
+                        Orientation="Horizontal" Spacing="4">
+
+                <!-- Play toggles between ▶ and ⏹ -->
+                <Button Classes="Primary"
+                        Command="{Binding PlayCommand}"
+                        Padding="20,6"
+                        MinWidth="80">
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}">
+                                <Binding Path="IsPlaying"
+                                         Converter="{StaticResource BoolToPlayLabelConverter}"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Button>
+
+                <Button Classes="Secondary"
+                        Content="{Binding PauseLabel}"
+                        Padding="14,6"
+                        Command="{Binding PauseCommand}"
+                        IsEnabled="{Binding IsPlaying}"/>
+
+                <Button Classes="Secondary"
+                        Content="{Binding StepLabel}"
+                        Padding="14,6"
+                        Command="{Binding StepCommand}"
+                        IsEnabled="{Binding IsPlaying}"/>
+            </StackPanel>
+
+            <!-- Right: layers / layout -->
+            <StackPanel DockPanel.Dock="Right"
+                        Orientation="Horizontal" Spacing="4">
+                <ComboBox FontSize="12" Width="90"
+                          Background="{DynamicResource BrushBgCard}"
+                          Foreground="{DynamicResource BrushTextHi}">
+                    <ComboBoxItem>Layers</ComboBoxItem>
+                    <ComboBoxItem>Default</ComboBoxItem>
+                    <ComboBoxItem>UI</ComboBoxItem>
+                </ComboBox>
+                <ComboBox FontSize="12" Width="90"
+                          Background="{DynamicResource BrushBgCard}"
+                          Foreground="{DynamicResource BrushTextHi}">
+                    <ComboBoxItem>Layout</ComboBoxItem>
+                    <ComboBoxItem>Default</ComboBoxItem>
+                    <ComboBoxItem>Tall</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+
+        </DockPanel>
+    </Border>
+
+</UserControl>

@@ -1,0 +1,193 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GKEngine.UI.ViewModels"
+             x:Class="GKEngine.UI.Views.MenuBarView"
+             x:DataType="vm:EditorViewModel"
+             Background="{DynamicResource BrushBgDeep}">
+
+    <Border BorderBrush="{DynamicResource BrushBorder}"
+            BorderThickness="0,0,0,1"
+            Padding="0,0,0,0">
+        <DockPanel>
+
+            <Menu DockPanel.Dock="Left"
+                  Background="Transparent"
+                  FontSize="13"
+                  Foreground="{DynamicResource BrushTextHi}">
+
+                <!-- ── File ──────────────────────────────── -->
+                <MenuItem Header="File">
+                    <MenuItem Header="New Scene"
+                              Command="{Binding NewSceneCommand}"
+                              InputGesture="Ctrl+N"/>
+                    <MenuItem Header="Open Scene..."
+                              InputGesture="Ctrl+O"/>
+                    <Separator/>
+                    <MenuItem Header="Save Scene"
+                              Command="{Binding SaveSceneCommand}"
+                              InputGesture="Ctrl+S"/>
+                    <MenuItem Header="Save Scene As..."
+                              InputGesture="Ctrl+Shift+S"/>
+                    <Separator/>
+                    <MenuItem Header="Build Settings..."/>
+                    <MenuItem Header="Build and Run"
+                              InputGesture="Ctrl+B"/>
+                    <Separator/>
+                    <MenuItem Header="Project Settings..."/>
+                    <Separator/>
+                    <MenuItem Header="Exit"
+                              InputGesture="Alt+F4"/>
+                </MenuItem>
+
+                <!-- ── Edit ──────────────────────────────── -->
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Undo"
+                              Command="{Binding UndoCommand}"
+                              InputGesture="Ctrl+Z"/>
+                    <MenuItem Header="Redo"
+                              Command="{Binding RedoCommand}"
+                              InputGesture="Ctrl+Y"/>
+                    <Separator/>
+                    <MenuItem Header="Cut"    InputGesture="Ctrl+X"/>
+                    <MenuItem Header="Copy"   InputGesture="Ctrl+C"/>
+                    <MenuItem Header="Paste"  InputGesture="Ctrl+V"/>
+                    <MenuItem Header="Delete" InputGesture="Del"
+                              Command="{Binding DeleteObjectCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Select All"  InputGesture="Ctrl+A"/>
+                    <MenuItem Header="Select None" InputGesture="Escape"/>
+                    <Separator/>
+                    <MenuItem Header="Frame Selected"   InputGesture="F"/>
+                    <MenuItem Header="Frame All"        InputGesture="A"/>
+                    <Separator/>
+                    <MenuItem Header="Play"   InputGesture="Ctrl+P"/>
+                    <MenuItem Header="Pause"  InputGesture="Ctrl+Shift+P"/>
+                    <MenuItem Header="Step"   InputGesture="Ctrl+Alt+P"/>
+                    <Separator/>
+                    <MenuItem Header="Preferences..."/>
+                </MenuItem>
+
+                <!-- ── Assets ────────────────────────────── -->
+                <MenuItem Header="Assets">
+                    <MenuItem Header="Create">
+                        <MenuItem Header="C# Script"/>
+                        <MenuItem Header="Shader"/>
+                        <MenuItem Header="Material"/>
+                        <MenuItem Header="Scene"/>
+                        <MenuItem Header="Prefab"/>
+                        <MenuItem Header="Folder"/>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Import New Asset..."/>
+                    <MenuItem Header="Import Package">
+                        <MenuItem Header="Custom Package..."/>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Export Package..."/>
+                    <Separator/>
+                    <MenuItem Header="Refresh" InputGesture="Ctrl+R"/>
+                    <MenuItem Header="Reimport All"/>
+                    <Separator/>
+                    <MenuItem Header="Open C# Project"/>
+                </MenuItem>
+
+                <!-- ── GameObject ────────────────────────── -->
+                <MenuItem Header="GameObject">
+                    <MenuItem Header="Create Empty"
+                              Command="{Binding AddObjectCommand}"
+                              InputGesture="Ctrl+Shift+N"/>
+                    <MenuItem Header="Create Empty Child"
+                              InputGesture="Alt+Shift+N"/>
+                    <Separator/>
+                    <MenuItem Header="3D Object">
+                        <MenuItem Header="Cube"/>
+                        <MenuItem Header="Sphere"/>
+                        <MenuItem Header="Capsule"/>
+                        <MenuItem Header="Cylinder"/>
+                        <MenuItem Header="Plane"/>
+                        <MenuItem Header="Quad"/>
+                        <Separator/>
+                        <MenuItem Header="Terrain"/>
+                        <MenuItem Header="Tree"/>
+                    </MenuItem>
+                    <MenuItem Header="2D Object">
+                        <MenuItem Header="Sprite"/>
+                        <MenuItem Header="Sprite Shape"/>
+                        <MenuItem Header="Tilemap"/>
+                    </MenuItem>
+                    <MenuItem Header="Light">
+                        <MenuItem Header="Directional Light"/>
+                        <MenuItem Header="Point Light"/>
+                        <MenuItem Header="Spot Light"/>
+                        <MenuItem Header="Area Light"/>
+                    </MenuItem>
+                    <MenuItem Header="Audio">
+                        <MenuItem Header="Audio Source"/>
+                        <MenuItem Header="Audio Listener"/>
+                    </MenuItem>
+                    <MenuItem Header="Camera"/>
+                    <Separator/>
+                    <MenuItem Header="Move To View"   InputGesture="Ctrl+Alt+F"/>
+                    <MenuItem Header="Align With View" InputGesture="Ctrl+Shift+F"/>
+                </MenuItem>
+
+                <!-- ── Window ────────────────────────────── -->
+                <MenuItem Header="Window">
+                    <MenuItem Header="Panels">
+                        <MenuItem Header="Hierarchy"
+                                  x:Name="MenuDetachHierarchy"/>
+                        <MenuItem Header="Scene"
+                                  x:Name="MenuDetachScene"/>
+                        <MenuItem Header="Game"
+                                  x:Name="MenuDetachGame"/>
+                        <MenuItem Header="Inspector"
+                                  x:Name="MenuDetachInspector"/>
+                        <MenuItem Header="Project"
+                                  x:Name="MenuDetachProject"/>
+                        <MenuItem Header="Console"
+                                  x:Name="MenuDetachConsole"/>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Layouts">
+                        <MenuItem Header="Default"/>
+                        <MenuItem Header="Tall"/>
+                        <MenuItem Header="Wide"/>
+                        <MenuItem Header="2 by 3"/>
+                        <MenuItem Header="4 Split"/>
+                        <Separator/>
+                        <MenuItem Header="Save Layout..."/>
+                        <MenuItem Header="Delete Layout..."/>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Asset Store"/>
+                    <MenuItem Header="Package Manager"/>
+                    <Separator/>
+                    <MenuItem Header="Console"   InputGesture="Ctrl+Shift+C"/>
+                    <MenuItem Header="Profiler"  InputGesture="Ctrl+7"/>
+                    <MenuItem Header="Rendering"/>
+                </MenuItem>
+
+                <!-- ── Help ──────────────────────────────── -->
+                <MenuItem Header="Help">
+                    <MenuItem Header="GK Engine Documentation"/>
+                    <MenuItem Header="Scripting Reference"/>
+                    <Separator/>
+                    <MenuItem Header="Report a Bug"/>
+                    <Separator/>
+                    <MenuItem Header="About GK Engine"/>
+                </MenuItem>
+
+            </Menu>
+
+            <!-- Engine version label -->
+            <TextBlock DockPanel.Dock="Right"
+                       Text="GK Engine 1.0"
+                       FontSize="11"
+                       Foreground="{DynamicResource BrushTextLo}"
+                       VerticalAlignment="Center"
+                       Margin="0,0,14,0"/>
+
+        </DockPanel>
+    </Border>
+
+</UserControl>

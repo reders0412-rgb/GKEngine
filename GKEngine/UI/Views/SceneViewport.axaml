@@ -1,0 +1,146 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GKEngine.UI.ViewModels"
+             xmlns:views="clr-namespace:GKEngine.UI.Views"
+             x:Class="GKEngine.UI.Views.SceneViewport"
+             x:DataType="vm:EditorViewModel"
+             Background="{DynamicResource BrushBgDeep}">
+
+    <TabControl Background="{DynamicResource BrushBgDeep}">
+
+        <!-- ── Scene Tab ───────────────────────────────── -->
+        <TabItem Header="{Binding SceneLabel}">
+            <DockPanel>
+                <!-- Gizmo / view toolbar -->
+                <Border DockPanel.Dock="Top"
+                        Background="{DynamicResource BrushBgDeep}"
+                        BorderBrush="{DynamicResource BrushBorder}"
+                        BorderThickness="0,0,0,1"
+                        Padding="6,3">
+                    <DockPanel>
+                        <!-- Gizmo tools -->
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <RadioButton Content="✋" GroupName="gizmo" Classes="GizmoBtn"
+                                         ToolTip.Tip="Hand (Q)"/>
+                            <RadioButton Content="↕"  GroupName="gizmo" Classes="GizmoBtn"
+                                         IsChecked="True"
+                                         ToolTip.Tip="Move (W)"/>
+                            <RadioButton Content="↺"  GroupName="gizmo" Classes="GizmoBtn"
+                                         ToolTip.Tip="Rotate (E)"/>
+                            <RadioButton Content="↔"  GroupName="gizmo" Classes="GizmoBtn"
+                                         ToolTip.Tip="Scale (R)"/>
+                            <RadioButton Content="⤢"  GroupName="gizmo" Classes="GizmoBtn"
+                                         ToolTip.Tip="Rect (T)"/>
+                        </StackPanel>
+
+                        <!-- View controls right -->
+                        <StackPanel DockPanel.Dock="Right"
+                                    Orientation="Horizontal" Spacing="4">
+                            <ComboBox FontSize="11" Width="80"
+                                      Background="{DynamicResource BrushBgCard}"
+                                      Foreground="{DynamicResource BrushTextHi}">
+                                <ComboBoxItem>Shaded</ComboBoxItem>
+                                <ComboBoxItem>Wireframe</ComboBoxItem>
+                                <ComboBoxItem>Unlit</ComboBoxItem>
+                                <ComboBoxItem>Normals</ComboBoxItem>
+                            </ComboBox>
+                            <ComboBox FontSize="11" Width="70"
+                                      Background="{DynamicResource BrushBgCard}"
+                                      Foreground="{DynamicResource BrushTextHi}">
+                                <ComboBoxItem>Persp</ComboBoxItem>
+                                <ComboBoxItem>Ortho</ComboBoxItem>
+                                <ComboBoxItem>Top</ComboBoxItem>
+                                <ComboBoxItem>Front</ComboBoxItem>
+                                <ComboBoxItem>Right</ComboBoxItem>
+                            </ComboBox>
+                            <Button Classes="IconBtn" Content="⚙" FontSize="14"
+                                    ToolTip.Tip="Scene gizmo settings"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- OpenGL viewport — NativeControlHost embeds C++ HWND -->
+                <Panel Background="#080810">
+                    <NativeControlHost x:Name="GlSceneHost"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"/>
+                    <!-- Overlay hint (hidden when renderer is attached) -->
+                    <TextBlock Text="Scene Viewport — OpenGL C++ renderer"
+                               FontSize="12"
+                               Foreground="#1E1E3A"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               IsHitTestVisible="False"/>
+                </Panel>
+
+            </DockPanel>
+        </TabItem>
+
+        <!-- ── Game Tab ────────────────────────────────── -->
+        <TabItem Header="{Binding GameLabel}">
+            <DockPanel>
+                <!-- Game toolbar: resolution / aspect -->
+                <Border DockPanel.Dock="Top"
+                        Background="{DynamicResource BrushBgDeep}"
+                        BorderBrush="{DynamicResource BrushBorder}"
+                        BorderThickness="0,0,0,1"
+                        Padding="6,3">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ComboBox FontSize="11" Width="130"
+                                  Background="{DynamicResource BrushBgCard}"
+                                  Foreground="{DynamicResource BrushTextHi}">
+                            <ComboBoxItem>Free Aspect</ComboBoxItem>
+                            <ComboBoxItem>16:9</ComboBoxItem>
+                            <ComboBoxItem>16:10</ComboBoxItem>
+                            <ComboBoxItem>4:3</ComboBoxItem>
+                            <ComboBoxItem>1920x1080</ComboBoxItem>
+                        </ComboBox>
+                        <ComboBox FontSize="11" Width="80"
+                                  Background="{DynamicResource BrushBgCard}"
+                                  Foreground="{DynamicResource BrushTextHi}">
+                            <ComboBoxItem>Scale 1x</ComboBoxItem>
+                            <ComboBoxItem>Scale 2x</ComboBoxItem>
+                        </ComboBox>
+                        <CheckBox Content="Stats" FontSize="11"
+                                  Foreground="{DynamicResource BrushTextHi}"/>
+                        <CheckBox Content="Gizmos" FontSize="11" IsChecked="True"
+                                  Foreground="{DynamicResource BrushTextHi}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Game viewport -->
+                <Panel Background="#050508">
+                    <NativeControlHost x:Name="GlGameHost"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"/>
+                    <TextBlock Text="Game Viewport — Press Play to preview"
+                               FontSize="12"
+                               Foreground="#1E1E3A"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               IsHitTestVisible="False"/>
+                </Panel>
+
+            </DockPanel>
+        </TabItem>
+
+    </TabControl>
+
+    <UserControl.Styles>
+        <Style Selector="RadioButton.GizmoBtn">
+            <Setter Property="Padding"         Value="6,3"/>
+            <Setter Property="Background"      Value="{DynamicResource BrushBgCard}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource BrushBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="4"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Foreground"      Value="{DynamicResource BrushTextLo}"/>
+        </Style>
+        <Style Selector="RadioButton.GizmoBtn:checked">
+            <Setter Property="Background"  Value="#0A2040"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushAccent}"/>
+            <Setter Property="Foreground"  Value="{DynamicResource BrushAccent}"/>
+        </Style>
+    </UserControl.Styles>
+
+</UserControl>

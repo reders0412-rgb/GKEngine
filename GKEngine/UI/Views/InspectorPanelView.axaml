@@ -1,0 +1,155 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GKEngine.UI.ViewModels"
+             xmlns:models="clr-namespace:GKEngine.UI.Models"
+             xmlns:views="clr-namespace:GKEngine.UI.Views"
+             x:Class="GKEngine.UI.Views.InspectorPanelView"
+             x:DataType="vm:EditorViewModel"
+             Background="{DynamicResource BrushBgPanel}">
+
+    <views:DetachablePanelView Title="{Binding InspectorLabel}">
+        <views:DetachablePanelView.PanelBody>
+            <DockPanel>
+
+                <!-- Object name + active toggle -->
+                <Border DockPanel.Dock="Top"
+                        Padding="10,8"
+                        BorderBrush="{DynamicResource BrushBorder}"
+                        BorderThickness="0,0,0,1">
+                    <DockPanel>
+                        <CheckBox DockPanel.Dock="Left"
+                                  IsChecked="True"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,8,0"/>
+                        <TextBox Text="{Binding SelectedObject.Name}"
+                                 FontSize="14"
+                                 FontWeight="Bold"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Foreground="{DynamicResource BrushTextHi}"/>
+                        <TextBlock DockPanel.Dock="Right"
+                                   Text="Static ▾"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource BrushTextLo}"
+                                   VerticalAlignment="Center"/>
+                    </DockPanel>
+                </Border>
+
+                <!-- Tag / Layer row -->
+                <Border DockPanel.Dock="Top"
+                        Padding="10,4"
+                        BorderBrush="{DynamicResource BrushBorder}"
+                        BorderThickness="0,0,0,1">
+                    <Grid ColumnDefinitions="40,*,10,40,*">
+                        <TextBlock Grid.Column="0" Text="Tag"
+                                   FontSize="11" Foreground="{DynamicResource BrushTextLo}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="1" FontSize="12" Height="24">
+                            <ComboBoxItem>Untagged</ComboBoxItem>
+                            <ComboBoxItem>MainCamera</ComboBoxItem>
+                            <ComboBoxItem>Player</ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock Grid.Column="3" Text="Layer"
+                                   FontSize="11" Foreground="{DynamicResource BrushTextLo}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="4" FontSize="12" Height="24">
+                            <ComboBoxItem>Default</ComboBoxItem>
+                            <ComboBoxItem>UI</ComboBoxItem>
+                            <ComboBoxItem>PostProcessing</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+
+                <!-- Components list -->
+                <ScrollViewer>
+                    <StackPanel Spacing="0">
+
+                        <!-- Each component rendered by DataTemplates -->
+                        <ItemsControl ItemsSource="{Binding Components}">
+                            <ItemsControl.DataTemplates>
+
+                                <!-- TransformComponent -->
+                                <DataTemplate DataType="models:TransformComponent">
+                                    <views:ComponentBlockView
+                                        Icon="⬛"
+                                        Title="{Binding Name}"
+                                        IsExpanded="{Binding IsExpanded}">
+                                        <views:ComponentBlockView.ComponentContent>
+                                            <StackPanel Spacing="2" Margin="10,4">
+                                                <views:Vec3RowView Label="Position"
+                                                    X="{Binding PosX}" Y="{Binding PosY}" Z="{Binding PosZ}"/>
+                                                <views:Vec3RowView Label="Rotation"
+                                                    X="{Binding RotX}" Y="{Binding RotY}" Z="{Binding RotZ}"/>
+                                                <views:Vec3RowView Label="Scale"
+                                                    X="{Binding ScaleX}" Y="{Binding ScaleY}" Z="{Binding ScaleZ}"/>
+                                            </StackPanel>
+                                        </views:ComponentBlockView.ComponentContent>
+                                    </views:ComponentBlockView>
+                                </DataTemplate>
+
+                                <!-- CameraComponent -->
+                                <DataTemplate DataType="models:CameraComponent">
+                                    <views:ComponentBlockView
+                                        Icon="📷"
+                                        Title="{Binding Name}"
+                                        IsExpanded="{Binding IsExpanded}">
+                                        <views:ComponentBlockView.ComponentContent>
+                                            <StackPanel Spacing="2" Margin="10,4">
+                                                <views:FieldRowView Label="FOV"   Value="{Binding FOV}"/>
+                                                <views:FieldRowView Label="Near"  Value="{Binding Near}"/>
+                                                <views:FieldRowView Label="Far"   Value="{Binding Far}"/>
+                                                <views:FieldRowView Label="Clear" Value="{Binding ClearColor}"/>
+                                            </StackPanel>
+                                        </views:ComponentBlockView.ComponentContent>
+                                    </views:ComponentBlockView>
+                                </DataTemplate>
+
+                                <!-- LightComponent -->
+                                <DataTemplate DataType="models:LightComponent">
+                                    <views:ComponentBlockView
+                                        Icon="💡"
+                                        Title="{Binding Name}"
+                                        IsExpanded="{Binding IsExpanded}">
+                                        <views:ComponentBlockView.ComponentContent>
+                                            <StackPanel Spacing="2" Margin="10,4">
+                                                <views:FieldRowView Label="Type"      Value="{Binding LightType}"/>
+                                                <views:FieldRowView Label="Color"     Value="{Binding Color}"/>
+                                                <views:FieldRowView Label="Intensity" Value="{Binding Intensity}"/>
+                                            </StackPanel>
+                                        </views:ComponentBlockView.ComponentContent>
+                                    </views:ComponentBlockView>
+                                </DataTemplate>
+
+                                <!-- MeshRendererComponent -->
+                                <DataTemplate DataType="models:MeshRendererComponent">
+                                    <views:ComponentBlockView
+                                        Icon="🗿"
+                                        Title="{Binding Name}"
+                                        IsExpanded="{Binding IsExpanded}">
+                                        <views:ComponentBlockView.ComponentContent>
+                                            <StackPanel Spacing="2" Margin="10,4">
+                                                <views:FieldRowView Label="Mesh"     Value="{Binding Mesh}"/>
+                                                <views:FieldRowView Label="Material" Value="{Binding Material}"/>
+                                            </StackPanel>
+                                        </views:ComponentBlockView.ComponentContent>
+                                    </views:ComponentBlockView>
+                                </DataTemplate>
+
+                            </ItemsControl.DataTemplates>
+                        </ItemsControl>
+
+                        <!-- Add Component button -->
+                        <Button Content="{Binding AddComponentLabel}"
+                                Classes="Secondary"
+                                Margin="10,10"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"/>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+            </DockPanel>
+        </views:DetachablePanelView.PanelBody>
+    </views:DetachablePanelView>
+
+</UserControl>

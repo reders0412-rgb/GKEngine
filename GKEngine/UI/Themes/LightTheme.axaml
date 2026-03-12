@@ -1,0 +1,61 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Color x:Key="ColorBgDeep">#F0F0F5</Color>
+  <Color x:Key="ColorBgPanel">#F8F8FC</Color>
+  <Color x:Key="ColorBgCard">#FFFFFF</Color>
+  <Color x:Key="ColorBorder">#D0D0E0</Color>
+  <Color x:Key="ColorAccent">#0075C4</Color>
+  <Color x:Key="ColorAccent2">#6C47CC</Color>
+  <Color x:Key="ColorTextHi">#111118</Color>
+  <Color x:Key="ColorTextLo">#7070A0</Color>
+
+  <SolidColorBrush x:Key="BrushBgDeep"  Color="{StaticResource ColorBgDeep}"/>
+  <SolidColorBrush x:Key="BrushBgPanel" Color="{StaticResource ColorBgPanel}"/>
+  <SolidColorBrush x:Key="BrushBgCard"  Color="{StaticResource ColorBgCard}"/>
+  <SolidColorBrush x:Key="BrushBorder"  Color="{StaticResource ColorBorder}"/>
+  <SolidColorBrush x:Key="BrushAccent"  Color="{StaticResource ColorAccent}"/>
+  <SolidColorBrush x:Key="BrushAccent2" Color="{StaticResource ColorAccent2}"/>
+  <SolidColorBrush x:Key="BrushTextHi"  Color="{StaticResource ColorTextHi}"/>
+  <SolidColorBrush x:Key="BrushTextLo"  Color="{StaticResource ColorTextLo}"/>
+
+  <Style Selector="TextBlock.PanelHeader">
+    <Setter Property="FontSize"   Value="12"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="{StaticResource BrushTextHi}"/>
+  </Style>
+
+  <Style Selector="TextBox.VecInput">
+    <Setter Property="FontSize"        Value="12"/>
+    <Setter Property="Background"      Value="{StaticResource BrushBgCard}"/>
+    <Setter Property="Foreground"      Value="{StaticResource BrushTextHi}"/>
+    <Setter Property="BorderBrush"     Value="{StaticResource BrushBorder}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius"    Value="3"/>
+    <Setter Property="Padding"         Value="6,3"/>
+    <Setter Property="Height"          Value="26"/>
+  </Style>
+
+  <Style Selector="Button.Primary">
+    <Setter Property="Background"  Value="{StaticResource BrushAccent}"/>
+    <Setter Property="Foreground"  Value="#FFFFFF"/>
+    <Setter Property="FontWeight"  Value="Bold"/>
+    <Setter Property="CornerRadius" Value="4"/>
+  </Style>
+
+  <Style Selector="Button.Secondary">
+    <Setter Property="Background"      Value="{StaticResource BrushBgCard}"/>
+    <Setter Property="Foreground"      Value="{StaticResource BrushTextHi}"/>
+    <Setter Property="BorderBrush"     Value="{StaticResource BrushBorder}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius"    Value="4"/>
+  </Style>
+
+  <Style Selector="Button.IconBtn">
+    <Setter Property="Background"      Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Foreground"      Value="{StaticResource BrushTextLo}"/>
+    <Setter Property="Cursor"          Value="Hand"/>
+  </Style>
+
+</ResourceDictionary>

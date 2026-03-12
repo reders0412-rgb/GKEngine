@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GKEngine.UI.Views.StatusBarView"
+             Background="{DynamicResource BrushBgDeep}">
+
+    <Border BorderBrush="{DynamicResource BrushBorder}"
+            BorderThickness="0,1,0,0"
+            Padding="10,3">
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Right"
+                       Text="GK Engine 1.0  |  OpenGL 3.3"
+                       FontSize="11"
+                       Foreground="{DynamicResource BrushTextLo}"/>
+            <TextBlock x:Name="StatusText"
+                       Text="Ready"
+                       FontSize="11"
+                       Foreground="{DynamicResource BrushTextLo}"/>
+        </DockPanel>
+    </Border>
+
+</UserControl>

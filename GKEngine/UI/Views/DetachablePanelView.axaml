@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GKEngine.UI.Views.DetachablePanelView"
+             Background="{DynamicResource BrushBgPanel}">
+
+    <DockPanel>
+        <!-- Panel header with title + detach button (⧉) -->
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource BrushBgDeep}"
+                BorderBrush="{DynamicResource BrushBorder}"
+                BorderThickness="0,0,0,1"
+                Padding="10,6">
+            <DockPanel>
+                <TextBlock x:Name="PanelTitleText"
+                           Classes="PanelHeader"
+                           VerticalAlignment="Center"
+                           Text="Panel"/>
+
+                <!-- Detach button -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="DetachButton"
+                        Classes="IconBtn"
+                        Content="⧉"
+                        ToolTip.Tip="Detach to window"
+                        Padding="4,1"
+                        FontSize="14"
+                        VerticalAlignment="Center"/>
+
+                <!-- Re-dock button (shown only when detached) -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="RedockButton"
+                        Classes="IconBtn"
+                        Content="⬛"
+                        ToolTip.Tip="Re-dock"
+                        Padding="4,1"
+                        FontSize="12"
+                        IsVisible="False"
+                        VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Panel content slot -->
+        <ContentPresenter x:Name="PanelContent"/>
+    </DockPanel>
+
+    <UserControl.Styles>
+        <Style Selector="Button.IconBtn">
+            <Setter Property="Background"  Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"  Value="{DynamicResource BrushTextLo}"/>
+            <Setter Property="Cursor"      Value="Hand"/>
+        </Style>
+        <Style Selector="Button.IconBtn:pointerover /template/ ContentPresenter">
+            <Setter Property="TextElement.Foreground" Value="{DynamicResource BrushTextHi}"/>
+        </Style>
+    </UserControl.Styles>
+
+</UserControl>

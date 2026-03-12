@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>GK_Engine</AssemblyName>
+    <RootNamespace>GKEngine.UI</RootNamespace>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia"               Version="11.1.0" />
+    <PackageReference Include="Avalonia.Desktop"       Version="11.1.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.0" />
+    <PackageReference Include="Avalonia.ReactiveUI"    Version="11.1.0" />
+    <PackageReference Include="ReactiveUI"             Version="20.1.1" />
+    <PackageReference Include="Newtonsoft.Json"        Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Views\**\*.axaml" />
+    <AvaloniaResource Include="Themes\**\*.axaml" />
+  </ItemGroup>
+
+  <!-- GK_Engine_Core.dll - C++ 렌더러 (P/Invoke) -->
+  <ItemGroup>
+    <None Include="GK_Engine_Core.dll" Condition="Exists('GK_Engine_Core.dll')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="GK_Engine_Core.pdb" Condition="Exists('GK_Engine_Core.pdb')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

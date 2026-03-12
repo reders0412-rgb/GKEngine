@@ -1,0 +1,65 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:GKEngine.UI.ViewModels"
+        xmlns:views="clr-namespace:GKEngine.UI.Views"
+        x:Class="GKEngine.UI.Views.EditorWindow"
+        x:DataType="vm:EditorViewModel"
+        Title="GK Engine 1.0"
+        Width="1440" Height="900"
+        MinWidth="1100" MinHeight="640"
+        Background="{DynamicResource BrushBgDeep}"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome">
+
+    <DockPanel>
+        <!-- ── Menu bar ─────────────────────────────────── -->
+        <views:MenuBarView DockPanel.Dock="Top"/>
+
+        <!-- ── Toolbar / Play controls ──────────────────── -->
+        <views:ToolbarView DockPanel.Dock="Top"/>
+
+        <!-- ── Status bar ───────────────────────────────── -->
+        <views:StatusBarView DockPanel.Dock="Bottom"/>
+
+        <!-- ── Main editor grid ─────────────────────────── -->
+        <!--
+             Column layout:  Hierarchy | Scene+Bottom | Inspector
+             Row layout:     Scene                    |
+                             ── splitter ──           |
+                             Project/Console          |
+        -->
+        <Grid ColumnDefinitions="220,3,*,3,280">
+
+            <!-- Hierarchy -->
+            <views:HierarchyPanelView Grid.Column="0"/>
+
+            <GridSplitter Grid.Column="1"
+                          ResizeDirection="Columns"
+                          Background="{DynamicResource BrushBorder}"/>
+
+            <!-- Centre column -->
+            <Grid Grid.Column="2" RowDefinitions="*,3,200">
+
+                <!-- Scene / Game viewport -->
+                <views:SceneViewport Grid.Row="0"/>
+
+                <GridSplitter Grid.Row="1"
+                              ResizeDirection="Rows"
+                              Background="{DynamicResource BrushBorder}"/>
+
+                <!-- Bottom: Project + Console -->
+                <views:BottomPanelView Grid.Row="2"/>
+            </Grid>
+
+            <GridSplitter Grid.Column="3"
+                          ResizeDirection="Columns"
+                          Background="{DynamicResource BrushBorder}"/>
+
+            <!-- Inspector -->
+            <views:InspectorPanelView Grid.Column="4"/>
+
+        </Grid>
+    </DockPanel>
+
+</Window>

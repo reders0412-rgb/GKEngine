@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GKEngine.UI.ViewModels"
+             xmlns:views="clr-namespace:GKEngine.UI.Views"
+             x:Class="GKEngine.UI.Views.HierarchyPanelView"
+             x:DataType="vm:EditorViewModel"
+             Background="{DynamicResource BrushBgPanel}">
+
+    <views:DetachablePanelView Title="{Binding HierarchyLabel}">
+        <views:DetachablePanelView.PanelBody>
+            <DockPanel>
+
+                <!-- Toolbar: search + add button -->
+                <Border DockPanel.Dock="Top"
+                        Padding="6,4"
+                        BorderBrush="{DynamicResource BrushBorder}"
+                        BorderThickness="0,0,0,1">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right"
+                                Content="+"
+                                ToolTip.Tip="Add GameObject"
+                                Command="{Binding AddObjectCommand}"
+                                Classes="IconBtn"
+                                FontSize="18"
+                                Padding="4,0"
+                                VerticalAlignment="Center"/>
+                        <TextBox Watermark="Search Hierarchy..."
+                                 FontSize="12"
+                                 Background="#0F0F14"
+                                 Foreground="{DynamicResource BrushTextHi}"
+                                 BorderBrush="{DynamicResource BrushBorder}"
+                                 CornerRadius="4"
+                                 Padding="6,4"/>
+                    </DockPanel>
+                </Border>
+
+                <!-- Scene object list -->
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding SceneObjects}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SceneObjectItem">
+                                <Border Background="Transparent"
+                                        Padding="{Binding IndentPx, Converter={StaticResource IntToThicknessConverter}, ConverterParameter=Left}"
+                                        PointerPressed="HierarchyItem_PointerPressed">
+                                    <Grid ColumnDefinitions="*,20,20" MinHeight="26">
+
+                                        <!-- Icon + Name -->
+                                        <StackPanel Grid.Column="0"
+                                                    Orientation="Horizontal"
+                                                    Spacing="6"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Icon}" FontSize="13"/>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="13"
+                                                       Foreground="{DynamicResource BrushTextHi}"/>
+                                        </StackPanel>
+
+                                        <!-- Visibility toggle (👁) -->
+                                        <Button Grid.Column="1"
+                                                Content="👁"
+                                                Classes="IconBtn"
+                                                FontSize="11"
+                                                Padding="0"
+                                                Opacity="{Binding IsVisible, Converter={StaticResource BoolToOpacityConverter}}"
+                                                ToolTip.Tip="Toggle Visibility"/>
+
+                                        <!-- Lock toggle (🔒) -->
+                                        <Button Grid.Column="2"
+                                                Content="🔒"
+                                                Classes="IconBtn"
+                                                FontSize="11"
+                                                Padding="0"
+                                                Opacity="{Binding IsLocked, Converter={StaticResource BoolToOpacityConverter}}"
+                                                ToolTip.Tip="Toggle Lock"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </DockPanel>
+        </views:DetachablePanelView.PanelBody>
+    </views:DetachablePanelView>
+
+</UserControl>
