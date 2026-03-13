@@ -3,16 +3,13 @@
 //  Uses RmlUi's built-in SDL/GL3 backend helpers.
 // ─────────────────────────────────────────────────────────────
 #include "RmlBackend.h"
-// Windows 헤더를 반드시 먼저 include해야 WINGDIAPI/APIENTRY가 정의됨
-// SDL이 내부에서 windows.h를 불완전하게 땡겨오면 gl.h가 폭발함
-#ifdef _WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  define NOMINMAX
-#  include <windows.h>
-#endif
-#include <GL/gl.h>
-#include <SDL.h>
 #include <RmlUi/Core.h>
+// RmlUi ships sample backends; we use the GL3 + SDL2 one.
+// If the full backend sources are vendored, include them here.
+// For now, provide a minimal stub that compiles cleanly.
+// Replace with the real RmlUi SDL/GL3 backend for production.
+#include <SDL.h>
+#include <GL/gl.h>
 
 namespace GK {
 
