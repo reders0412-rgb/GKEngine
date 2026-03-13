@@ -49,11 +49,14 @@ set(MZ_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(RmlUi SDL2 json CURL minizip)
 
-# ── minizip-ng: grab include dir explicitly (FetchContent may not propagate it)
+# ── minizip-ng: 타겟 이름이 버전에 따라 minizip / minizip-ng / MINIZIP::minizip 다를 수 있음
+# include 경로를 SOURCE_DIR 기준으로 직접 잡아줌
 get_target_property(_mz_inc minizip INTERFACE_INCLUDE_DIRECTORIES)
 if(NOT _mz_inc)
-    set(_mz_inc "${minizip_SOURCE_DIR}")
+    set(_mz_inc "")
 endif()
+# minizip-ng 4.x는 헤더가 소스 루트에 있음 (minizip/mz.h 형태)
+list(APPEND _mz_inc "${minizip_SOURCE_DIR}")
 
 add_executable(GKHub WIN32
     src/main.cpp
