@@ -20,6 +20,10 @@ void SettingsManager::load() {
         m_s.syncLangToEngine  = j.value("syncLang",true);
         m_s.autoCheckUpdates  = j.value("autoCheck",true);
         m_s.manifestUrl       = j.value("manifestUrl", std::string(GK_MANIFEST_URL));
+        m_s.username          = j.value("username",    "");
+        m_s.displayName       = j.value("displayName", "");
+        m_s.avatarUrl         = j.value("avatarUrl",   "");
+        m_s.defaultProjectsPath = j.value("defaultProjectsPath", "");
     } catch(const std::exception& e) {
         std::cerr << "[Settings] " << e.what() << "\n";
     }
@@ -31,8 +35,12 @@ void SettingsManager::save() {
     j["theme"]       = ThemeManager::instance().themeCode();
     j["syncTheme"]   = m_s.syncThemeToEngine;
     j["syncLang"]    = m_s.syncLangToEngine;
-    j["autoCheck"]   = m_s.autoCheckUpdates;
-    j["manifestUrl"] = m_s.manifestUrl;
+    j["autoCheck"]            = m_s.autoCheckUpdates;
+    j["manifestUrl"]          = m_s.manifestUrl;
+    j["username"]             = m_s.username;
+    j["displayName"]          = m_s.displayName;
+    j["avatarUrl"]            = m_s.avatarUrl;
+    j["defaultProjectsPath"]  = m_s.defaultProjectsPath;
     std::ofstream(settingsPath()) << j.dump(2);
     if (m_s.syncThemeToEngine || m_s.syncLangToEngine)
         writeEngineSettings();

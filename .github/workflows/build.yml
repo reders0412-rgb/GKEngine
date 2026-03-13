@@ -33,7 +33,10 @@ jobs:
           restore-keys: deps-
 
       - name: Configure
-        run: cmake -B build -G "Visual Studio 17 2022" -A x64 -DGK_VERSION="${{ env.GK_VERSION }}"
+        run: |
+          cmake -B build -G "Visual Studio 17 2022" -A x64 `
+            -DGK_VERSION="${{ env.GK_VERSION }}" `
+            -DCMAKE_BUILD_TYPE=Release
 
       - name: Build (Hub + Core DLL + Engine UI 한번에)
         run: cmake --build build --config Release -j4

@@ -13,6 +13,11 @@ struct Settings {
     bool        syncLangToEngine   = true;
     bool        autoCheckUpdates   = true;
     std::string manifestUrl        = GK_MANIFEST_URL;
+    // Profile
+    std::string username;
+    std::string displayName;
+    std::string avatarUrl;
+    std::string defaultProjectsPath;
 };
 
 class SettingsManager {

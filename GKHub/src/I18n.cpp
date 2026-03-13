@@ -80,6 +80,24 @@ void I18n::loadEnglish() {
         {"engine.addComponent","+ Add Component"},{"engine.transform","Transform"},
         {"engine.position","Position"},{"engine.rotation","Rotation"},
         {"engine.scale","Scale"},{"engine.camera","Camera"},
+        // Templates
+        {"nav.templates","Templates"},
+        {"templates.title","Project Templates"},
+        {"templates.refresh","Refresh"},
+        {"templates.download","Download"},
+        {"templates.downloading","Downloading..."},
+        {"templates.cached","Cached"},
+        {"templates.builtin","Built-in"},
+        {"templates.by","by"},
+        {"templates.selectHint","Select a template to use for your new project."},
+        {"modal.useTemplate","Use Template"},
+        // Profile / Settings
+        {"settings.profile","Profile"},
+        {"settings.username","GitHub Username"},
+        {"settings.usernameSub","Used to fetch your avatar automatically"},
+        {"settings.displayName","Display Name"},
+        {"settings.defaultPath","Default Projects Path"},
+        {"settings.defaultPathSub","Where new projects are created by default"},
     };
 }
 
@@ -133,6 +151,24 @@ void I18n::loadKorean() {
         {"engine.addComponent","+ 컴포넌트 추가"},{"engine.transform","트랜스폼"},
         {"engine.position","위치"},{"engine.rotation","회전"},
         {"engine.scale","크기"},{"engine.camera","카메라"},
+        // Templates
+        {"nav.templates","템플릿"},
+        {"templates.title","프로젝트 템플릿"},
+        {"templates.refresh","새로고침"},
+        {"templates.download","다운로드"},
+        {"templates.downloading","다운로드 중..."},
+        {"templates.cached","캐시됨"},
+        {"templates.builtin","내장"},
+        {"templates.by","제작:"},
+        {"templates.selectHint","새 프로젝트에 사용할 템플릿을 선택하세요."},
+        {"modal.useTemplate","템플릿 사용"},
+        // Profile / Settings
+        {"settings.profile","프로필"},
+        {"settings.username","GitHub 사용자 이름"},
+        {"settings.usernameSub","아바타를 자동으로 가져오는 데 사용됩니다"},
+        {"settings.displayName","표시 이름"},
+        {"settings.defaultPath","기본 프로젝트 경로"},
+        {"settings.defaultPathSub","새 프로젝트가 기본으로 생성되는 위치"},
     };
 }
 

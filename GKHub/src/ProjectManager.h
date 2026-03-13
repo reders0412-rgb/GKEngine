@@ -16,10 +16,18 @@ public:
         std::filesystem::path projectRoot;
     };
 
+    // Legacy builtin templates
     CreateResult createProject(
         const std::string& name,
         const std::filesystem::path& parentDir,
         ProjectTemplate templ,
+        const std::string& engineVersion);
+
+    // New: create from TemplateInfo (copies cached template dir if available)
+    CreateResult createProjectFromTemplate(
+        const std::string& name,
+        const std::filesystem::path& parentDir,
+        const TemplateInfo& tmpl,
         const std::string& engineVersion);
 
     bool openProject(const ProjectInfo& proj, const std::filesystem::path& engineExe);
@@ -31,6 +39,7 @@ private:
     std::vector<ProjectInfo> m_projects;
 
     void createFolderStructure(const std::filesystem::path& root, ProjectTemplate t) const;
+    void copyTemplateFiles(const std::filesystem::path& root, const TemplateInfo& tmpl) const;
     void writeProjectMeta(const std::filesystem::path& root, const ProjectInfo& info) const;
     void writeGameScene(const std::filesystem::path& scenesDir, ProjectTemplate t) const;
     static std::string nowIso();

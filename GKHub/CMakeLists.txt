@@ -33,7 +33,21 @@ set(BUILD_CURL_EXE    OFF CACHE BOOL "" FORCE)
 set(CURL_USE_OPENSSL  OFF CACHE BOOL "" FORCE)
 set(CURL_USE_SCHANNEL ON  CACHE BOOL "" FORCE)
 
-FetchContent_MakeAvailable(RmlUi SDL2 json CURL)
+FetchContent_Declare(minizip
+    GIT_REPOSITORY https://github.com/zlib-ng/minizip-ng.git
+    GIT_TAG        4.0.5 GIT_SHALLOW TRUE)
+set(MZ_FETCH_LIBS   ON  CACHE BOOL "" FORCE)
+set(MZ_ZLIB         ON  CACHE BOOL "" FORCE)
+set(MZ_BZIP2        OFF CACHE BOOL "" FORCE)
+set(MZ_LZMA         OFF CACHE BOOL "" FORCE)
+set(MZ_ZSTD         OFF CACHE BOOL "" FORCE)
+set(MZ_OPENSSL      OFF CACHE BOOL "" FORCE)
+set(MZ_PKCRYPT      OFF CACHE BOOL "" FORCE)
+set(MZ_WZAES        OFF CACHE BOOL "" FORCE)
+set(MZ_SIGNING      OFF CACHE BOOL "" FORCE)
+set(MZ_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(RmlUi SDL2 json CURL minizip)
 
 add_executable(GKHub WIN32
     src/main.cpp
@@ -46,7 +60,9 @@ add_executable(GKHub WIN32
     src/ThemeManager.cpp
     src/TrayIcon.cpp
     src/SplashScreen.cpp
-    src/EventHandler.cpp)
+    src/EventHandler.cpp
+    src/TemplateManager.cpp
+    src/ProfileManager.cpp)
 
 set_target_properties(GKHub PROPERTIES OUTPUT_NAME "GK_Hub")
 
@@ -60,6 +76,7 @@ target_include_directories(GKHub PRIVATE src)
 target_link_libraries(GKHub PRIVATE
     RmlCore SDL2::SDL2 SDL2::SDL2main
     nlohmann_json::nlohmann_json CURL::libcurl
+    minizip
     opengl32 dwmapi shell32 ole32 user32)
 
 if(MSVC)

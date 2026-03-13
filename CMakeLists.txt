@@ -19,11 +19,15 @@ set(GK_MANIFEST_URL "https://raw.githubusercontent.com/reders0412-rgb/GKEngine/m
 set(GK_DIST_DIR     "${CMAKE_SOURCE_DIR}/dist")
 
 # .NET SDK 찾기
-find_program(DOTNET_EXE dotnet REQUIRED
-    HINTS
-        "$ENV{ProgramFiles}/dotnet"
-        "$ENV{ProgramFiles(x86)}/dotnet"
-        "C:/Program Files/dotnet")
+# ★ Fix: $ENV{ProgramFiles(x86)} 는 CMake 에서 '(' ')' 가 변수 이름에
+#         허용되지 않으므로 하드코딩 경로로 커버합니다.
+set(_dotnet_hints
+    "$ENV{DOTNET_ROOT}"
+    "$ENV{ProgramFiles}/dotnet"
+    "C:/Program Files/dotnet"
+    "C:/Program Files (x86)/dotnet"
+)
+find_program(DOTNET_EXE dotnet REQUIRED HINTS ${_dotnet_hints})
 message(STATUS "[GKSuite] dotnet: ${DOTNET_EXE}")
 
 # ===================================================================
@@ -99,10 +103,13 @@ add_custom_target(GKSuiteDist ALL
 #  STEP 5: MSVC 런타임 DLL 자동 복사
 # ===================================================================
 if(MSVC)
+    # vswhere 는 거의 항상 ProgramFiles(x86)/Microsoft Visual Studio/Installer 에 있음
+    # CMake ENV{} 파싱 버그를 피하기 위해 하드코딩 경로 + PATH 검색 조합 사용
     find_program(VSWHERE_EXE vswhere
         HINTS
-            "$ENV{ProgramFiles(x86)}/Microsoft Visual Studio/Installer"
-            "$ENV{ProgramFiles}/Microsoft Visual Studio/Installer")
+            "C:/Program Files (x86)/Microsoft Visual Studio/Installer"
+            "C:/Program Files/Microsoft Visual Studio/Installer"
+        PATHS ENV PATH)
     if(VSWHERE_EXE)
         add_custom_target(CopyMsvcRuntime ALL
             DEPENDS GKHub

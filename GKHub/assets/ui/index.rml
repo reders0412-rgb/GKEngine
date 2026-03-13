@@ -2,73 +2,208 @@
 <head>
     <title>GK Hub</title>
     <link type="text/rcss" href="style.rcss"/>
-    <script src="hub.js"/>
 </head>
 <body>
 <div id="shell">
 
-    <!-- ── Sidebar ──────────────────────────────────────── -->
+    <!-- ══ Sidebar ══════════════════════════════════════════════ -->
     <div id="sidebar">
-        <div id="logo-wrap">
-            <img src="../logo.png" alt="GeekPiz"/>
+
+        <!-- Profile block (Unity Hub style) -->
+        <div id="profile-block">
+            <div id="avatar-wrap">
+                <img id="avatar-img" src="../logo.png"/>
+            </div>
+            <div id="profile-info">
+                <div id="profile-name">GeekPiz</div>
+                <div id="profile-sub">geekpiz.dev</div>
+            </div>
         </div>
-        <a class="nav-item active" id="nav-projects" onclick="showTab('projects')">📁 Projects</a>
-        <a class="nav-item"       id="nav-installs"  onclick="showTab('installs')">⬇ Installs</a>
-        <a class="nav-item"       id="nav-learn"     onclick="showTab('learn')">📖 Learn</a>
-        <a class="nav-item"       id="nav-settings"  onclick="showTab('settings')">⚙ Settings</a>
-        <a class="nav-item"       id="nav-about"     onclick="showTab('about')">ℹ About</a>
+
+        <!-- Nav -->
+        <a class="nav-item active" id="nav-projects"  onclick="showTab('projects')">
+            <span class="nav-icon">▣</span> Projects
+        </a>
+        <a class="nav-item"       id="nav-templates" onclick="showTab('templates')">
+            <span class="nav-icon">⬡</span> Templates
+        </a>
+        <a class="nav-item"       id="nav-installs"  onclick="showTab('installs')">
+            <span class="nav-icon">↓</span> Installs
+        </a>
+        <a class="nav-item"       id="nav-learn"     onclick="showTab('learn')">
+            <span class="nav-icon">◎</span> Learn
+        </a>
+
+        <div class="nav-spacer"/>
+
+        <a class="nav-item"       id="nav-settings"  onclick="showTab('settings')">
+            <span class="nav-icon">⚙</span> Preferences
+        </a>
+        <a class="nav-item"       id="nav-about"     onclick="showTab('about')">
+            <span class="nav-icon">ℹ</span> About
+        </a>
     </div>
 
-    <!-- ── Main ─────────────────────────────────────────── -->
+    <!-- ══ Main ════════════════════════════════════════════════ -->
     <div id="main">
 
-        <!-- Topbar -->
+        <!-- ── Topbar ─────────────────────────────────────── -->
         <div id="topbar">
             <button class="btn-primary"   onclick="openNewProjectModal()">+ New Project</button>
             <button class="btn-secondary" onclick="addExistingProject()">Add Existing</button>
-            <input  class="search-box" type="text" placeholder="Search projects..." oninput="filterProjects(event.value)"/>
+            <input  class="search-box" type="text"
+                    placeholder="Search projects..."
+                    oninput="filterProjects(event.value)"/>
+            <div style="flex:1;"/>
+            <div id="topbar-sort">
+                <button class="sort-btn selected" onclick="sortProjects('modified')">Modified</button>
+                <button class="sort-btn"          onclick="sortProjects('name')">Name</button>
+            </div>
         </div>
 
-        <!-- Content: Projects tab -->
-        <div id="tab-projects" class="tab-content" id-="content">
-            <div id="project-list">
-                <!-- Populated by C++ EventHandler via Rml DataBindings -->
-            </div>
+        <!-- ── Tab: Projects ──────────────────────────────── -->
+        <div id="tab-projects" class="tab-content">
+            <div id="project-list"/>
             <div id="empty-state" class="empty-state">
-                <div class="icon">🗂</div>
-                <h2>No projects yet.</h2>
-                <p>Click + New Project to get started.</p>
+                <div class="empty-icon">▣</div>
+                <div class="empty-title">No projects yet.</div>
+                <div class="empty-sub">Click <strong>+ New Project</strong> to get started.</div>
             </div>
         </div>
 
-        <!-- Content: Installs tab -->
+        <!-- ── Tab: Templates ────────────────────────────── -->
+        <div id="tab-templates" class="tab-content" style="display:none">
+            <div class="tab-inner">
+                <div class="tab-header">
+                    <h2 class="tab-title">Project Templates</h2>
+                    <button class="btn-secondary" onclick="refreshTemplates()">↺ Refresh</button>
+                </div>
+                <p class="tab-hint">Select a template to use for your new project.</p>
+                <!-- Filter bar -->
+                <div id="template-filters">
+                    <div class="filter-btn selected" onclick="filterTemplates('all')">All</div>
+                    <div class="filter-btn" onclick="filterTemplates('2D')">2D</div>
+                    <div class="filter-btn" onclick="filterTemplates('3D')">3D</div>
+                </div>
+                <!-- Grid -->
+                <div id="template-grid">
+                    <!-- Built-in 3D -->
+                    <div class="tmpl-card selected" id="tmpl-card-builtin-3d"
+                         onclick="selectTemplateCard('builtin-3d','3D')">
+                        <div class="tmpl-thumb tmpl-thumb-3d">
+                            <span>3D</span>
+                        </div>
+                        <div class="tmpl-info">
+                            <div class="tmpl-name">3D</div>
+                            <div class="tmpl-author">by GK Team</div>
+                            <div class="tmpl-badge builtin-badge">Built-in</div>
+                        </div>
+                    </div>
+                    <!-- Built-in 2D -->
+                    <div class="tmpl-card" id="tmpl-card-builtin-2d"
+                         onclick="selectTemplateCard('builtin-2d','2D')">
+                        <div class="tmpl-thumb tmpl-thumb-2d">
+                            <span>2D</span>
+                        </div>
+                        <div class="tmpl-info">
+                            <div class="tmpl-name">2D</div>
+                            <div class="tmpl-author">by GK Team</div>
+                            <div class="tmpl-badge builtin-badge">Built-in</div>
+                        </div>
+                    </div>
+                    <!-- Community templates injected by EventHandler -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Tab: Installs ──────────────────────────────── -->
         <div id="tab-installs" class="tab-content" style="display:none">
-            <div id="content">
-                <div style="display:flex; align-items:center; margin-bottom:20px; gap:12px;">
-                    <h2 style="flex:1; font-size:18px;">GK Engine Versions</h2>
+            <div class="tab-inner">
+                <div class="tab-header">
+                    <h2 class="tab-title">GK Engine Installs</h2>
                     <button class="btn-secondary" onclick="checkUpdates()">Check for Updates</button>
                 </div>
                 <div id="version-list"/>
                 <div id="install-empty" class="empty-state">
-                    <div class="icon">📦</div>
-                    <h2>Click Check for Updates to load available versions.</h2>
+                    <div class="empty-icon">↓</div>
+                    <div class="empty-title">No versions found.</div>
+                    <div class="empty-sub">Click <strong>Check for Updates</strong> to load available versions.</div>
                 </div>
             </div>
         </div>
 
-        <!-- Content: Learn tab -->
+        <!-- ── Tab: Learn ─────────────────────────────────── -->
         <div id="tab-learn" class="tab-content" style="display:none">
-            <div id="content">
-                <h2 style="font-size:18px; margin-bottom:20px;">GK Engine Documentation</h2>
-                <div class="install-card"><span class="install-tag">📖 Getting Started</span><button class="btn-secondary">Open</button></div>
-                <div class="install-card"><span class="install-tag">📜 Scripting Guide</span><button class="btn-secondary">Open</button></div>
-                <div class="install-card"><span class="install-tag">🎨 Rendering</span><button class="btn-secondary">Open</button></div>
+            <div class="tab-inner">
+                <div class="tab-header">
+                    <h2 class="tab-title">GK Engine Documentation</h2>
+                </div>
+                <div class="learn-grid">
+                    <div class="learn-card" onclick="openUrl('https://docs.geekpiz.dev/getting-started')">
+                        <div class="learn-card-icon">▶</div>
+                        <div class="learn-card-title">Getting Started</div>
+                        <div class="learn-card-sub">Set up your first GK Engine project</div>
+                    </div>
+                    <div class="learn-card" onclick="openUrl('https://docs.geekpiz.dev/scripting')">
+                        <div class="learn-card-icon">{ }</div>
+                        <div class="learn-card-title">Scripting Guide</div>
+                        <div class="learn-card-sub">C# scripting with GeekBehaviour</div>
+                    </div>
+                    <div class="learn-card" onclick="openUrl('https://docs.geekpiz.dev/rendering')">
+                        <div class="learn-card-icon">◈</div>
+                        <div class="learn-card-title">Rendering</div>
+                        <div class="learn-card-sub">PBR materials &amp; OpenGL renderer</div>
+                    </div>
+                    <div class="learn-card" onclick="openUrl('https://docs.geekpiz.dev/physics')">
+                        <div class="learn-card-icon">⬟</div>
+                        <div class="learn-card-title">Physics</div>
+                        <div class="learn-card-sub">Rigidbody, Collider, physics settings</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Content: Settings tab -->
+        <!-- ── Tab: Settings ──────────────────────────────── -->
         <div id="tab-settings" class="tab-content" style="display:none">
-            <div id="content">
+            <div class="tab-inner">
+                <div class="tab-header">
+                    <h2 class="tab-title">Preferences</h2>
+                </div>
+
+                <!-- Profile -->
+                <div class="settings-section">
+                    <div class="settings-title">Profile</div>
+                    <div class="settings-row">
+                        <div class="settings-row-label">
+                            <strong>GitHub Username</strong>
+                            <span>Used to fetch your avatar automatically</span>
+                        </div>
+                        <input class="field-input inline-input" id="pref-username"
+                               type="text" placeholder="reders0412-rgb"
+                               onchange="prefChanged()"/>
+                    </div>
+                    <div class="settings-row">
+                        <div class="settings-row-label">
+                            <strong>Display Name</strong>
+                        </div>
+                        <input class="field-input inline-input" id="pref-displayname"
+                               type="text" placeholder="GeekPiz"
+                               onchange="prefChanged()"/>
+                    </div>
+                    <div class="settings-row">
+                        <div class="settings-row-label">
+                            <strong>Default Projects Path</strong>
+                            <span>Where new projects are created by default</span>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <input class="field-input inline-input" id="pref-defaultpath"
+                                   type="text" style="width:220px;"
+                                   onchange="prefChanged()"/>
+                            <button class="btn-secondary" onclick="browsePrefPath()">…</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Appearance -->
                 <div class="settings-section">
                     <div class="settings-title">Appearance</div>
@@ -84,6 +219,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Language -->
                 <div class="settings-section">
                     <div class="settings-title">Language</div>
@@ -94,13 +230,11 @@
                         </div>
                         <div class="theme-picker">
                             <div class="theme-option selected" id="lang-en" onclick="setLang('en')">English</div>
-                            <div class="theme-option" id="lang-ko" onclick="setLang('ko')">한국어</div>
+                            <div class="theme-option"          id="lang-ko" onclick="setLang('ko')">한국어</div>
                         </div>
                     </div>
-                    <p style="font-size:12px; color:var(--text-lo); margin-top:8px;">
-                        ⓘ Language change takes effect immediately.
-                    </p>
                 </div>
+
                 <!-- Sync -->
                 <div class="settings-section">
                     <div class="settings-title">Engine Sync</div>
@@ -113,6 +247,7 @@
                         <div class="toggle on" id="toggle-syncLang" onclick="toggleSetting('syncLang')"/>
                     </div>
                 </div>
+
                 <!-- Updates -->
                 <div class="settings-section">
                     <div class="settings-title">Updates</div>
@@ -120,68 +255,125 @@
                         <div class="settings-row-label"><strong>Auto-check for Updates</strong></div>
                         <div class="toggle on" id="toggle-autoCheck" onclick="toggleSetting('autoCheck')"/>
                     </div>
+                    <div class="settings-row">
+                        <div class="settings-row-label">
+                            <strong>Manifest URL</strong>
+                            <span>Custom versions.json URL</span>
+                        </div>
+                        <input class="field-input inline-input" id="pref-manifest"
+                               type="text" style="width:260px;"
+                               onchange="prefChanged()"/>
+                    </div>
                 </div>
-                <button class="btn-primary" onclick="saveSettings()" style="margin-top:8px;">Save Settings</button>
-                <span id="settings-saved" style="display:none; color:var(--success); margin-left:12px;">✓ Saved</span>
+
+                <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+                    <button class="btn-primary" onclick="saveSettings()">Save Preferences</button>
+                    <span id="settings-saved" style="display:none; color:var(--success); font-size:13px;">✓ Saved</span>
+                </div>
             </div>
         </div>
 
-        <!-- Content: About tab -->
+        <!-- ── Tab: About ─────────────────────────────────── -->
         <div id="tab-about" class="tab-content" style="display:none">
-            <div id="content" style="text-align:center; padding:60px 40px;">
-                <img src="../logo.png" style="width:80px; margin-bottom:20px;"/>
-                <h1 style="font-size:28px; margin-bottom:4px;">GK Engine</h1>
-                <p style="color:var(--accent); margin-bottom:4px;">Version 1.0</p>
-                <p style="color:var(--text-lo); margin-bottom:32px;">Lightweight. Powerful. Yours.</p>
-                <p style="color:var(--text-lo); font-size:12px;">Built by <strong style="color:var(--text-mid);">GeekPiz (reders0412-rgb)</strong></p>
-                <p style="color:var(--text-lo); font-size:12px; margin-top:4px;">© 2024 GeekPiz. All rights reserved.</p>
+            <div class="tab-inner about-inner">
+                <img src="../logo.png" style="width:72px; margin-bottom:16px;"/>
+                <h1 class="about-title">GK Engine</h1>
+                <p class="about-version">Version 1.0</p>
+                <p class="about-tag">Lightweight. Powerful. Yours.</p>
+                <p class="about-by">Built by <strong>GeekPiz</strong> · <span style="color:var(--accent)">github.com/reders0412-rgb</span></p>
+                <p class="about-copy">© 2024 GeekPiz. All rights reserved.</p>
 
-                <!-- Open source licenses accordion -->
-                <div style="text-align:left; margin-top:40px; border-top:1px solid var(--border); padding-top:24px;">
-                    <h3 style="font-size:14px; color:var(--text-mid); margin-bottom:16px;">Open Source Libraries</h3>
-                    <div class="install-card"><span class="install-tag">RmlUi 6.0</span><span style="color:var(--text-lo); font-size:12px;">MIT</span></div>
-                    <div class="install-card"><span class="install-tag">SDL2 2.30</span><span style="color:var(--text-lo); font-size:12px;">zlib</span></div>
-                    <div class="install-card"><span class="install-tag">nlohmann/json 3.11.3</span><span style="color:var(--text-lo); font-size:12px;">MIT</span></div>
-                    <div class="install-card"><span class="install-tag">libcurl 8.7.1</span><span style="color:var(--text-lo); font-size:12px;">curl (MIT-like)</span></div>
-                    <div class="install-card"><span class="install-tag">minizip-ng 4.0.5</span><span style="color:var(--text-lo); font-size:12px;">zlib</span></div>
-                    <div class="install-card"><span class="install-tag">stb_image 2.29</span><span style="color:var(--text-lo); font-size:12px;">Public Domain</span></div>
-                    <div class="install-card"><span class="install-tag">Noto Sans</span><span style="color:var(--text-lo); font-size:12px;">OFL 1.1</span></div>
-                    <div class="install-card"><span class="install-tag">.NET Runtime 8.0</span><span style="color:var(--text-lo); font-size:12px;">MIT</span></div>
-                    <div class="install-card"><span class="install-tag">Avalonia UI 11.x</span><span style="color:var(--text-lo); font-size:12px;">MIT</span></div>
+                <div class="about-libs">
+                    <div class="about-libs-title">Open Source Libraries</div>
+                    <div class="lib-row"><span class="lib-name">RmlUi 6.0</span><span class="lib-lic">MIT</span></div>
+                    <div class="lib-row"><span class="lib-name">SDL2 2.30</span><span class="lib-lic">zlib</span></div>
+                    <div class="lib-row"><span class="lib-name">nlohmann/json 3.11.3</span><span class="lib-lic">MIT</span></div>
+                    <div class="lib-row"><span class="lib-name">libcurl 8.7.1</span><span class="lib-lic">MIT-like</span></div>
+                    <div class="lib-row"><span class="lib-name">minizip-ng 4.0.5</span><span class="lib-lic">zlib</span></div>
+                    <div class="lib-row"><span class="lib-name">stb_image 2.29</span><span class="lib-lic">Public Domain</span></div>
+                    <div class="lib-row"><span class="lib-name">Noto Sans</span><span class="lib-lic">OFL 1.1</span></div>
+                    <div class="lib-row"><span class="lib-name">.NET Runtime 8.0</span><span class="lib-lic">MIT</span></div>
+                    <div class="lib-row"><span class="lib-name">Avalonia UI 11.x</span><span class="lib-lic">MIT</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Status bar -->
+        <!-- ── Status bar ──────────────────────────────────── -->
         <div id="statusbar">
+            <div id="status-indicator"/>
             <span id="status-text">Ready.</span>
+            <div class="statusbar-sep"/>
             <span class="version">GK Hub 1.0</span>
         </div>
 
     </div><!-- /#main -->
-
 </div><!-- /#shell -->
 
-<!-- New Project Modal -->
+<!-- ═══════════════════════════════════════════════════════════
+     New Project Modal
+════════════════════════════════════════════════════════════ -->
 <div id="modal-new" class="modal-overlay" style="display:none">
-    <div class="modal">
-        <h2>New Project</h2>
-        <label class="field-label">Project Name</label>
-        <input  class="field-input" id="proj-name" type="text" placeholder="MyGame"/>
-        <label class="field-label">Location</label>
-        <div style="display:flex; gap:8px;">
-            <input class="field-input" id="proj-location" type="text" style="flex:1; margin-bottom:0;"/>
-            <button class="btn-secondary" onclick="browseLocation()" style="white-space:nowrap;">Browse</button>
+    <div class="modal modal-wide">
+        <div class="modal-header">
+            <h2>New Project</h2>
+            <button class="modal-close" onclick="closeModal()">✕</button>
         </div>
-        <div style="margin-bottom:14px;"/>
-        <label class="field-label">Engine Version</label>
-        <select class="field-input" id="proj-version"/>
-        <label class="field-label">Template</label>
-        <div class="template-row">
-            <div class="template-btn selected" id="tmpl-3d" onclick="selectTemplate('3D')">🎮 3D</div>
-            <div class="template-btn"          id="tmpl-2d" onclick="selectTemplate('2D')">🕹 2D</div>
+
+        <!-- Left: template picker -->
+        <div class="modal-body">
+            <div class="modal-left">
+                <div class="modal-section-label">Template</div>
+                <div id="modal-template-list">
+                    <div class="modal-tmpl selected" id="modal-tmpl-builtin-3d"
+                         onclick="modalSelectTemplate('builtin-3d','3D')">
+                        <div class="modal-tmpl-icon">🎮</div>
+                        <div>
+                            <div class="modal-tmpl-name">3D</div>
+                            <div class="modal-tmpl-sub">Built-in</div>
+                        </div>
+                    </div>
+                    <div class="modal-tmpl" id="modal-tmpl-builtin-2d"
+                         onclick="modalSelectTemplate('builtin-2d','2D')">
+                        <div class="modal-tmpl-icon">🕹</div>
+                        <div>
+                            <div class="modal-tmpl-name">2D</div>
+                            <div class="modal-tmpl-sub">Built-in</div>
+                        </div>
+                    </div>
+                    <!-- community templates appended by EventHandler -->
+                </div>
+            </div>
+
+            <!-- Right: project settings -->
+            <div class="modal-right">
+                <div class="modal-section-label">Project Settings</div>
+
+                <label class="field-label">Project Name</label>
+                <input class="field-input" id="proj-name" type="text" placeholder="MyGame"/>
+
+                <label class="field-label">Location</label>
+                <div style="display:flex; gap:8px;">
+                    <input class="field-input" id="proj-location" type="text"
+                           style="flex:1; margin-bottom:0;"/>
+                    <button class="btn-secondary" onclick="browseLocation()">…</button>
+                </div>
+                <div style="margin-bottom:12px;"/>
+
+                <label class="field-label">Engine Version</label>
+                <select class="field-input" id="proj-version"/>
+
+                <!-- Template description -->
+                <div id="tmpl-desc-box" class="tmpl-desc-box">
+                    <div id="tmpl-desc-title" class="tmpl-desc-title">3D</div>
+                    <div id="tmpl-desc-text"  class="tmpl-desc-text">
+                        A basic 3D project. Includes a camera, a directional light, and a sample cube.
+                    </div>
+                    <div id="tmpl-desc-author" class="tmpl-desc-author">by GK Team</div>
+                </div>
+            </div>
         </div>
-        <div class="modal-actions">
+
+        <div class="modal-footer">
             <button class="btn-secondary" onclick="closeModal()">Cancel</button>
             <button class="btn-primary"   onclick="createProject()">Create Project</button>
         </div>

@@ -21,6 +21,86 @@ static std::string now_iso() {
 
 ProjectManager::ProjectManager() {}
 
+// ─── createProjectFromTemplate ────────────────────────────────
+ProjectManager::CreateResult ProjectManager::createProjectFromTemplate(
+    const std::string& name,
+    const std::filesystem::path& parentDir,
+    const TemplateInfo& tmpl,
+    const std::string& engineVersion)
+{
+    // Map to legacy enum for builtin templates, otherwise create from cache
+    if (tmpl.builtin) {
+        auto legacyTempl = (tmpl.type == "2D")
+            ? ProjectTemplate::Template2D
+            : ProjectTemplate::Template3D;
+        return createProject(name, parentDir, legacyTempl, engineVersion);
+    }
+
+    CreateResult res;
+    if (name.empty()) { res.error = "Project name is empty."; return res; }
+
+    auto root = parentDir / name;
+    if (std::filesystem::exists(root)) {
+        res.error = "Folder already exists: " + root.string(); return res;
+    }
+
+    try {
+        // Determine type for metadata
+        auto legacyTempl = (tmpl.type == "2D")
+            ? ProjectTemplate::Template2D
+            : ProjectTemplate::Template3D;
+
+        // Create base folder structure
+        createFolderStructure(root, legacyTempl);
+
+        // Overlay template files from library cache (if downloaded)
+        if (tmpl.cachedLocally && std::filesystem::exists(tmpl.cacheDir)) {
+            copyTemplateFiles(root, tmpl);
+        }
+
+        ProjectInfo info;
+        info.name          = name;
+        info.path          = root;
+        info.engineVersion = engineVersion;
+        info.templ         = legacyTempl;
+        info.lastOpened    = now_iso();
+
+        writeProjectMeta(root, info);
+
+        // Only write default scene if no scene from template
+        auto scenePath = root / "Assets" / "Scenes" / "game.sce";
+        if (!std::filesystem::exists(scenePath))
+            writeGameScene(root / "Assets" / "Scenes", legacyTempl);
+
+        m_projects.push_back(info);
+        save();
+
+        res.ok = true;
+        res.projectRoot = root;
+    } catch(const std::exception& e) {
+        res.error = std::string("Exception: ") + e.what();
+    }
+    return res;
+}
+
+void ProjectManager::copyTemplateFiles(
+    const std::filesystem::path& root, const TemplateInfo& tmpl) const
+{
+    // Recursively copy everything from the cached template dir into the project root
+    // Existing files (from createFolderStructure) are overwritten by template
+    namespace fs = std::filesystem;
+    for (auto& entry : fs::recursive_directory_iterator(tmpl.cacheDir)) {
+        auto rel = fs::relative(entry.path(), tmpl.cacheDir);
+        auto dst = root / rel;
+        if (entry.is_directory()) {
+            fs::create_directories(dst);
+        } else {
+            fs::create_directories(dst.parent_path());
+            fs::copy_file(entry.path(), dst, fs::copy_options::overwrite_existing);
+        }
+    }
+}
+
 // ─── createProject ────────────────────────────────────────────
 ProjectManager::CreateResult ProjectManager::createProject(
     const std::string& name,
@@ -218,5 +298,10 @@ std::filesystem::path Paths::editorsDir()         { return exeDir() / GK_EDITORS
 std::filesystem::path Paths::projectsFile()       { return exeDir() / "projects.json"; }
 std::filesystem::path Paths::settingsFile()       { return exeDir() / "settings.json"; }
 std::filesystem::path Paths::engineSettingsFile() { return exeDir() / "engine_settings.json"; }
+std::filesystem::path Paths::templateLibraryDir() { return exeDir() / "Library" / "templates"; }
+std::filesystem::path Paths::templateCacheDir(const std::string& id) {
+    return templateLibraryDir() / id;
+}
+std::filesystem::path Paths::avatarCacheDir()     { return exeDir() / "Library" / "avatars"; }
 
 } // namespace GK

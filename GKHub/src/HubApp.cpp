@@ -4,6 +4,8 @@
 #include "SplashScreen.h"
 #include <RmlUi/Core.h>
 #include <SDL.h>
+#include <curl/curl.h>
+#include <thread>
 #include <iostream>
 
 namespace GK {
@@ -25,10 +27,53 @@ int HubApp::run(int argc, char** argv) {
 
     loadDocuments();
 
+    // 비동기 초기화: 템플릿 목록 + 프로필 아바타 다운로드
+    startAsyncInit();
+
     m_running = true;
     mainLoop();
     shutdown();
     return 0;
+}
+
+void HubApp::startAsyncInit() {
+    auto& s = m_settings->settings();
+
+    // 프로필: username 있으면 GitHub 아바타 자동 다운로드
+    ProfileManager::instance().loadFromSettings(
+        s.username, s.displayName, s.avatarUrl);
+
+    // 버전 manifest 에서 템플릿 목록 로드 (백그라운드)
+    std::thread([this]() {
+        // VersionManager 통해 versions.json fetch
+        // 여기서는 settings 의 manifestUrl 직접 사용
+        auto& sm = m_settings->settings();
+        std::string url = sm.manifestUrl.empty()
+            ? std::string(GK_MANIFEST_URL)
+            : sm.manifestUrl;
+
+        CURL* c = curl_easy_init();
+        std::string body;
+        auto write = [](void* d, size_t s, size_t n, std::string* o) -> size_t {
+            o->append((char*)d, s*n); return s*n;
+        };
+        curl_easy_setopt(c, CURLOPT_URL,           url.c_str());
+        curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, +[](void* d, size_t s, size_t n, void* o) -> size_t {
+            ((std::string*)o)->append((char*)d, s*n); return s*n;
+        });
+        curl_easy_setopt(c, CURLOPT_WRITEDATA,     &body);
+        curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION,1L);
+        curl_easy_setopt(c, CURLOPT_TIMEOUT,       15L);
+        curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER,1L);
+        CURLcode res = curl_easy_perform(c);
+        curl_easy_cleanup(c);
+
+        if (res == CURLE_OK && !body.empty()) {
+            TemplateManager::instance().parseFromJson(body);
+            TemplateManager::instance().scanLocalCache();
+            TemplateManager::instance().prefetchThumbnails();
+        }
+    }).detach();
 }
 
 bool HubApp::initSDL() {
