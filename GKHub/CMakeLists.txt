@@ -49,6 +49,12 @@ set(MZ_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(RmlUi SDL2 json CURL minizip)
 
+# ── minizip-ng: grab include dir explicitly (FetchContent may not propagate it)
+get_target_property(_mz_inc minizip INTERFACE_INCLUDE_DIRECTORIES)
+if(NOT _mz_inc)
+    set(_mz_inc "${minizip_SOURCE_DIR}")
+endif()
+
 add_executable(GKHub WIN32
     src/main.cpp
     src/HubApp.cpp
@@ -68,10 +74,15 @@ set_target_properties(GKHub PROPERTIES OUTPUT_NAME "GK_Hub")
 
 target_compile_definitions(GKHub PRIVATE
     GK_HUB_VERSION="${GK_VERSION}"
+    GK_VERSION="${GK_VERSION}"
     GK_MANIFEST_URL="${GK_MANIFEST_URL}"
     _CRT_SECURE_NO_WARNINGS NOMINMAX UNICODE _UNICODE)
 
-target_include_directories(GKHub PRIVATE src)
+target_include_directories(GKHub PRIVATE
+    src
+    ${rmlui_SOURCE_DIR}/Include    # RmlUi/Core.h etc.
+    ${_mz_inc}                     # minizip/mz.h etc.
+)
 
 target_link_libraries(GKHub PRIVATE
     RmlCore SDL2::SDL2 SDL2::SDL2main

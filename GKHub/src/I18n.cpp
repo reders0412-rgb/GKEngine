@@ -1,4 +1,5 @@
 #include "I18n.h"
+#include "Common.h"
 #include <iostream>
 
 namespace GK {
