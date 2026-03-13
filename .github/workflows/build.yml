@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
 
 env:
-  GK_VERSION: "1.0"   # ★ 버전 변경 시 이것만 (CMakeLists.txt GK_VERSION 과 동일하게)
+  GK_VERSION: "1.0"
 
 jobs:
   build:
-    name: "Build All (single cmake --build)"
+    name: "Build GK Suite"
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -22,50 +22,50 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+      # 1. Freetype 설치 (vcpkg 사용)
+      - name: Install Dependencies (vcpkg)
+        run: vcpkg install freetype:x64-windows
 
-      - name: Cache FetchContent
-        uses: actions/cache@v4
-        with:
-          path: build/_deps
-          key: deps-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: deps-
-
-      - name: Configure
+      # 2. GK Engine Core 빌드 (가이드 3번 항목 적용)
+      - name: Configure & Build Core
         run: |
-          cmake -B build -G "Visual Studio 17 2022" -A x64 `
-            -DGK_VERSION="${{ env.GK_VERSION }}" `
+          cmake -B build/core GKEngine/Core `
+            -G "Visual Studio 17 2022" -A x64 `
             -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/core --config Release -j4
 
-      - name: Build (Hub + Core DLL + Engine UI 한번에)
-        run: cmake --build build --config Release -j4
+      # 3. GK Hub 빌드 (가이드 4번 항목 적용 + vcpkg 연결)
+      - name: Configure & Build Hub
+        run: |
+          cmake -B build/hub GKHub `
+            -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/hub --config Release -j4
 
-      - name: Upload dist/
+      # 4. GK Engine UI 빌드 (가이드 5번 항목 적용)
+      - name: Build Engine UI
+        shell: pwsh
+        run: |
+          # DLL 복사
+          Copy-Item build/core/Release/GK_Engine_Core.dll GKEngine/UI/
+          # UI 빌드 및 퍼블리시
+          dotnet publish GKEngine/UI/GKEngine.UI.csproj `
+            -c Release -r win-x64 --self-contained false `
+            -o dist/GKEngineUI /p:Version=${{ env.GK_VERSION }}
+
+      # 5. 배포 패키지 조립 (가이드 6번 항목 적용)
+      - name: Assemble Package
+        shell: pwsh
+        run: |
+          $pkg = "dist/GKSuite-${{ env.GK_VERSION }}"
+          New-Item -Force -ItemType Directory $pkg, "$pkg/Editors/${{ env.GK_VERSION }}"
+          Copy-Item build/hub/Release/GK_Hub.exe $pkg/
+          if (Test-Path "GKHub/assets") { Copy-Item -Recurse GKHub/assets $pkg/assets }
+          Copy-Item -Recurse dist/GKEngineUI/* "$pkg/Editors/${{ env.GK_VERSION }}/"
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: GKSuite-${{ env.GK_VERSION }}-Windows-x64
-          path: dist/
-          retention-days: 30
-
-      - name: ZIP (main branch only)
-        if: github.ref == 'refs/heads/main'
-        shell: pwsh
-        run: Compress-Archive dist/* "GKSuite-${{ env.GK_VERSION }}-Windows-x64.zip"
-
-      - name: Upload ZIP
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: GKSuite-Release-${{ env.GK_VERSION }}
-          path: GKSuite-${{ env.GK_VERSION }}-Windows-x64.zip
-          retention-days: 90
-
-      - name: GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: GKSuite-${{ env.GK_VERSION }}-Windows-x64.zip
-          name: "GK Suite ${{ env.GK_VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: dist/GKSuite-${{ env.GK_VERSION }}
