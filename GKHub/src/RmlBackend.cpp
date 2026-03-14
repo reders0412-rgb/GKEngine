@@ -8,8 +8,9 @@
 // If the full backend sources are vendored, include them here.
 // For now, provide a minimal stub that compiles cleanly.
 // Replace with the real RmlUi SDL/GL3 backend for production.
+// SDL2 반드시 먼저: WINGDIAPI / APIENTRY 매크로를 SDL2가 정의해야 gl.h가 정상 파싱됨
 #include <SDL.h>
-#include <GL/gl.h>
+#include <SDL_opengl.h>
 
 namespace GK {
 

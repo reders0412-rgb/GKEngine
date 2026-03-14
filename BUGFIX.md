@@ -1,72 +1,88 @@
-# GK Hub 빌드 버그 수정 내역
+# GKHub 빌드 버그 수정 내역
 
-## 수정된 파일
-
-| 파일 | 변경 내용 |
-|------|-----------|
-| `GKHub/CMakeLists.txt` | minizip include path 구조 수정, RmlUi include path 추가, `GK_VERSION` define 추가 |
-| `GKHub/src/I18n.cpp` | `#include "Common.h"` 추가 |
+## 수정된 버그 목록
 
 ---
 
-## 버그 1: `minizip/mz.h` No such file or directory
+### Bug 1: `RmlBackend.cpp` — `GL/gl.h` 파싱 오류 (100+ 에러)
 
-**원인 (핵심):**
-
-minizip-ng 4.x 헤더 구조:
+**에러 메시지:**
 ```
-_deps/
-  minizip-src/      ← minizip_SOURCE_DIR
-    mz.h
-    mz_strm.h
-    mz_zip.h
+gl.h(1157): error C2144: syntax error: 'void' should be preceded by ';'
+gl.h(1157): error C4430: missing type specifier - int assumed
+gl.h(1157): error C2182: 'APIENTRY': this use of 'void' is not valid
+... (100개 이상 반복)
 ```
 
-코드에서 `#include <minizip/mz.h>` 형태로 쓰려면
-`minizip/` 폴더가 include path 아래에 있어야 함.
-→ `minizip_SOURCE_DIR` 자체가 아니라 **그 부모**(`_deps/`)를 잡아야 함.
+**원인:**  
+`gl.h`는 `WINGDIAPI`와 `APIENTRY` 매크로가 미리 정의된 상태를 전제로 함.  
+`<GL/gl.h>`를 직접 include하면 이 매크로들이 정의되지 않은 채로 파싱되어 모든 OpenGL 함수 선언이 깨짐.  
+SDL2의 `<SDL_opengl.h>`를 쓰면 SDL2가 내부적으로 WINGDIAPI/APIENTRY를 보장하고 gl.h를 안전하게 포함함.
 
-**수정:**
-```cmake
-get_filename_component(_mz_parent "${minizip_SOURCE_DIR}" DIRECTORY)
-
-target_include_directories(GKHub PRIVATE
-    ${_mz_parent}          # minizip/mz.h 해결
-    ${minizip_SOURCE_DIR}  # fallback
-)
-```
-
----
-
-## 버그 2: `RmlUi/Core.h` No such file or directory
-
-**수정:**
-```cmake
-target_include_directories(GKHub PRIVATE
-    src
-    ${rmlui_SOURCE_DIR}/Include
-    ...
-)
-```
-
----
-
-## 버그 3: `I18n.cpp` 문법 오류 폭탄
-
-**원인:** `GK_VERSION` 매크로 미정의 (Common.h 미include)
-
-**수정 — I18n.cpp:**
+**수정 (`GKHub/src/RmlBackend.cpp`):**
 ```cpp
-#include "I18n.h"
-#include "Common.h"   // 추가
-#include <iostream>
+// Before
+#include <SDL.h>
+#include <GL/gl.h>
+
+// After
+#include <SDL.h>
+#include <SDL_opengl.h>
 ```
 
-**수정 — CMakeLists.txt:**
+---
+
+### Bug 2 & 3: `VersionManager.cpp` / `TemplateManager.cpp` — `minizip/mz.h` not found
+
+**에러 메시지:**
+```
+error C1083: Cannot open include file: 'minizip/mz.h': No such file or directory
+```
+
+**원인:**  
+사용 중인 라이브러리는 **minizip-ng** (zlib-ng 포크).  
+minizip-ng의 헤더는 `minizip/` 서브폴더 구조가 없고 소스 루트에 `mz.h`가 직접 위치함.  
+CMakeLists에서 `_mz_parent` 트릭으로 `minizip/mz.h` 형태를 억지로 맞추려 했지만 FetchContent 환경에서 불안정함.
+
+**수정 (VersionManager.cpp, TemplateManager.cpp):**
+```cpp
+// Before
+#include <minizip/mz.h>
+#include <minizip/mz_strm.h>
+#include <minizip/mz_zip.h>
+#include <minizip/mz_zip_rw.h>
+
+// After
+#include <mz.h>
+#include <mz_strm.h>
+#include <mz_zip.h>
+#include <mz_zip_rw.h>
+```
+
+**수정 (GKHub/CMakeLists.txt):**
 ```cmake
-target_compile_definitions(GKHub PRIVATE
-    GK_HUB_VERSION="${GK_VERSION}"
-    GK_VERSION="${GK_VERSION}"    # 추가
+# Before
+get_filename_component(_mz_parent "${minizip_SOURCE_DIR}" DIRECTORY)
+target_include_directories(GKHub PRIVATE
     ...
+    ${_mz_parent}
+    ${minizip_SOURCE_DIR}
+)
+
+# After
+target_include_directories(GKHub PRIVATE
+    ...
+    ${minizip_SOURCE_DIR}
 )
 ```
+
+---
+
+## 수정된 파일 요약
+
+| 파일 | 수정 내용 |
+|------|-----------|
+| `GKHub/src/RmlBackend.cpp` | `<GL/gl.h>` → `<SDL_opengl.h>` |
+| `GKHub/src/VersionManager.cpp` | `minizip/mz*.h` → `mz*.h` |
+| `GKHub/src/TemplateManager.cpp` | `minizip/mz*.h` → `mz*.h` |
+| `GKHub/CMakeLists.txt` | `_mz_parent` 제거, include path 단순화 |

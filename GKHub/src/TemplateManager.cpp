@@ -1,9 +1,9 @@
 #include "TemplateManager.h"
 #include <nlohmann/json.hpp>
 #include <curl/curl.h>
-#include <minizip/mz.h>
-#include <minizip/mz_zip.h>
-#include <minizip/mz_zip_rw.h>
+#include <mz.h>
+#include <mz_zip.h>
+#include <mz_zip_rw.h>
 #include <fstream>
 #include <thread>
 #include <iostream>

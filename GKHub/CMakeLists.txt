@@ -49,12 +49,6 @@ set(MZ_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(RmlUi SDL2 json CURL minizip)
 
-# ── minizip-ng: 헤더는 소스루트에 직접 있음 (mz.h, mz_strm.h 등)
-# #include <minizip/mz.h> 형태로 쓰려면 소스루트의 "부모"를 include해야 함.
-# FetchContent는 보통 <build_root>/_deps/minizip-src/ 에 클론하므로
-# 부모 = <build_root>/_deps/ 를 잡아주면 minizip/mz.h 로 접근 가능.
-get_filename_component(_mz_parent "${minizip_SOURCE_DIR}" DIRECTORY)
-
 add_executable(GKHub WIN32
     src/main.cpp
     src/HubApp.cpp
@@ -81,8 +75,7 @@ target_compile_definitions(GKHub PRIVATE
 target_include_directories(GKHub PRIVATE
     src
     ${rmlui_SOURCE_DIR}/Include    # RmlUi/Core.h etc.
-    ${_mz_parent}                  # minizip/mz.h → <_deps>/minizip-src/mz.h
-    ${minizip_SOURCE_DIR}          # fallback: 직접 include하는 경우
+    ${minizip_SOURCE_DIR}          # mz.h, mz_zip.h 등 직접 접근
 )
 
 target_link_libraries(GKHub PRIVATE
