@@ -34,12 +34,13 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build/core --config Release -j4
 
-      # 3. GK Hub 빌드 (가이드 4번 항목 적용 + vcpkg 연결)
+      # 3. GK Hub 빌드 (경로 명시 추가)
       - name: Configure & Build Hub
         run: |
           cmake -B build/hub GKHub `
             -G "Visual Studio 17 2022" -A x64 `
             -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            -DCMAKE_PREFIX_PATH="${{ github.workspace }}/build/core" ` # 이 줄을 추가!
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build/hub --config Release -j4
 
