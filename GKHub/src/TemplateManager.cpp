@@ -134,7 +134,8 @@ void TemplateManager::downloadTemplate(
         if (!ok) { onDone(false, err); return; }
 
         onProgress(0.75f, "Extracting...");
-        void* reader = mz_zip_reader_create();
+        void* reader = NULL;
+        mz_zip_reader_create(&reader);
         if (mz_zip_reader_open_file(reader, tmp.string().c_str()) == MZ_OK) {
             mz_zip_reader_save_all(reader, dest.string().c_str());
             mz_zip_reader_close(reader);

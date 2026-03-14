@@ -106,7 +106,8 @@ bool VersionManager::downloadAndExtract(const EngineVersion& ver,
 
     // ── Extract ───────────────────────────────────────────────
     onProg(0.7f, "Extracting...");
-    void* reader = mz_zip_reader_create();
+    void* reader = NULL;
+    mz_zip_reader_create(&reader);
     if (mz_zip_reader_open_file(reader, tmp.string().c_str()) == MZ_OK) {
         mz_zip_reader_save_all(reader, dst.string().c_str());
         mz_zip_reader_close(reader);
