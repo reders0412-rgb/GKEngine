@@ -16,7 +16,10 @@ include(FetchContent)
 FetchContent_Declare(RmlUi
     GIT_REPOSITORY https://github.com/mikke89/RmlUi.git
     GIT_TAG        6.0 GIT_SHALLOW TRUE)
-set(RMLUI_SAMPLES_ENABLED OFF CACHE BOOL "" FORCE)
+set(RMLUI_SAMPLES_ENABLED  OFF CACHE BOOL "" FORCE)
+set(RMLUI_TESTS_ENABLED    OFF CACHE BOOL "" FORCE)
+set(RMLUI_BACKEND_SDL2     OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS      OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(SDL2
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
@@ -79,7 +82,7 @@ target_include_directories(GKHub PRIVATE
 )
 
 target_link_libraries(GKHub PRIVATE
-    RmlCore SDL2::SDL2 SDL2::SDL2main
+    RmlUi::RmlCore SDL2::SDL2 SDL2::SDL2main
     nlohmann_json::nlohmann_json CURL::libcurl
     minizip
     opengl32 dwmapi shell32 ole32 user32)
